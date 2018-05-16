@@ -1,3 +1,5 @@
+**IMPORTANT** : This branch is intended to be used if a TripleHead2Go is being used and the middle output should be taken as the primary one.
+
 FakeXRandR
 ==========
 
