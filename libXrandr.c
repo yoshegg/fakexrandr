@@ -60,6 +60,36 @@ int _is_fake_xrandr = 1;
 */
 #include "skeleton.h"
 
+
+/*
+	Addition for Matrox TripleHead2Go. 
+	
+	Defines that the second monitor out of three should be the primary.
+
+	Code snippet taken from https://gist.github.com/oranenj/3658446#file-toggle-primary-c
+*/
+static RROutput (*_XRRGetOutputPrimary)(Display *dpy, Window window);
+RROutput XRRGetOutputPrimary(Display *dpy, Window window) {
+    XRRScreenResources* res = XRRGetScreenResources(dpy, window);
+    int num_connected = 0;
+    RROutput connected[res->noutput]; 
+    for (int i = 0; i < res->noutput; i++) {
+        XRROutputInfo* oinfo = XRRGetOutputInfo(dpy, res, res->outputs[i]);
+        if (oinfo->connection == RR_Connected) {
+            connected[num_connected] = res->outputs[i];
+            num_connected++;
+        }  
+        
+        XRRFreeOutputInfo(oinfo);
+    }
+	if (num_connected == 3) {
+    	return connected[1];
+	} else {
+		return connected[0];
+	}
+}
+
+
 /*
 	We use an augmented version of the screen resources to store all our
 	information: We preallocate all XRROutputInfo and XRRCrtcInfo structures
